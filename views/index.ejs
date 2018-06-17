@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Requirements</title>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"></link>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script type="text/javascript">
+        $(document).ready(function(){
+          show();
+          $("#form1").submit(function(event){
+            event.preventDefault();
+            show();
+            $.ajax({
+              type:'POST',
+              url:'/create',
+              data: $('#form1').serialize(),
+              
+              success:function(response){
+                console.log("response123456");
+                clearInputs();
+                show();
+              }
+            });
+          });
+      $('table').on('click','.btn.btn-danger',function(){
+            var rowEl = $(this).closest('tr');
+            var id =rowEl.find('.id').text();
+            console.log(id);
+           $.ajax({
+             url:'/dog/'+id,
+             method:'DELETE',
+             contentType:'application/json',
+             success:function(response){
+               console.log(response);
+               show();
+             }
+           });
+      });
+      $('table').on('click','.btn.btn-success',function(){
+            var rowEl = $(this).closest('tr');
+            var id =rowEl.find('.id').text();
+            var name = rowEl.find('.name').text();
+            console.log(id);
+            window.location.assign("http://127.0.0.1:3000/dog/"+name)
+         //   window.location.href="http://127.0.0.1:3000/dog/"+name;
+
+      });
+        function show(){
+          $.ajax({
+            type:'GET',
+            url:'/show',
+            dataType:"json",
+            success:function(response){
+              console.log(response);
+              var tbodyEl=$('tbody');
+              tbodyEl.html('');
+              response.forEach(function(requirements){
+                tbodyEl.append('\
+                <tr>\
+                <td>\
+                  <p class="name">'+requirements.name+'</p>\
+                </td>\
+                <td>\
+                   <p class="breed">'+requirements.breed+'</p>\
+                </td>\
+                <td>\
+                  <p class="colour">'+requirements.colour+'</p>\
+                </td>\
+                <td>\
+                        <button class="btn btn-success">UPDATE</button>\
+                        <button class="btn btn-danger">DELETE</button>\
+                </td>\
+                <td class="id" style="display:none">'+requirements._id+'</td>\
+                </tr>\
+                ');
+
+              });
+            },error:function(){
+              
+            }
+          })
+        }
+        function clearInputs(){
+          console.log("hi");
+        $("#name").val('');
+        $("#breed").val('');
+        $("#colour").val('');
+    }
+
+      });
+     
+ </script>
+   </head>
+   <body>
+      <div class="container">
+         <h1>Requirements</h1>
+         <h5>Welcome to Requirements</h5>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th>ReqName</th>
+                  <th>CreatedBy</th>
+                  <th>DependsOn</th>
+                  <th>Actions</th>
+               </tr>
+            </thead>
+            <tbody>
+               
+              <!-- //-    <td>
+              //-        <form action="/delete" method="post"><input type="hidden" value="5b1ed85011fa621628b2590d" name="_id" id="_id"><input type="submit" value="Delete" class="btn btn-danger"></form>
+              //-     </td>
+              //-     <td>
+              //-        <p> <a href="/dog/asas" type="button" class="btn btn-success">Update              </a></p>
+              //-     </td>
+              //-  </tr>
+              //-  <tr>
+              //-     <td>
+              //-        <p>dsdsd</p>
+              //-     </td>
+              //-     <td>
+              //-        <p>sdds </p>
+              //-     </td>
+              //-     <td>
+              //-        <p>sdds               </p>
+              //-     </td>
+              //-     <td>
+              //-        <form action="/delete" method="post"><input type="hidden" value="5b200709e9318407e898b319" name="_id" id="_id"><input type="submit" value="Delete" class="btn btn-danger"></form>
+              //-     </td>
+              //-     <td>
+              //-        <p> <a href="/dog/dsdsd" type="button" class="btn btn-success">Update              </a></p>
+              //-     </td>
+              //-  </tr> -->
+            </tbody>
+         </table>
+         <form id="form1"  method="post" class="form-horizontal">
+            <h3>Add Requirements</h3>
+            <input id="name" name="name" type="text" placeholder="Name"><br>
+            <input id="breed" name="breed" type="text" placeholder="Breed"><br>
+           <input id="colour" name="colour" type="text" placeholder="Colour"><br>
+          <input type="submit" value="Submit" class="btn btn-primary">
+         </form>
+      </div>
+   </body>
+</html>
